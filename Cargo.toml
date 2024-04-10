@@ -1,8 +1,9 @@
-[package]
-name = "cargo-edit-issue-891"
+[workspace]
+resolver = "2"
+members = [ "cargo-edit-issue-891" ]
+
+[workspace.package]
 version = "0.1.0"
+authors = [ "Michael Brogdon <Michael.Brogdon@monotype.com>" ]
+description = "A workspace for reproducing cargo-edit issue 891"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
