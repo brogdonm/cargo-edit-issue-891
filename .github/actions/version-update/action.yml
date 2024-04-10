@@ -1,0 +1,24 @@
+name: 'Update version'
+description: 'Update version in Cargo.toml'
+author: "brogdonm"
+inputs:
+  version:
+    description: 'Version to update to'
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Install cargo-edit
+      uses: baptiste0928/cargo-install@v3
+      with:
+        tool: cargo-edit
+    - name: Update workspace version
+      id: update-workspace-version
+      shell: bash
+      run: cargo set-version ${{ inputs.version }} --workspace
+    - name: Git status
+      shell: bash
+      run: git status
+    - name: Git diff
+      shell: bash
+      run: git diff
