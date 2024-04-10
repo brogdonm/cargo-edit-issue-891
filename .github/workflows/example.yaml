@@ -6,17 +6,49 @@ on:
       - "main"
 
 jobs:
+  get-versions-and-new-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.get-version-from-latest-tag.outputs.release_version }}
+      release_tag: ${{ steps.get-latest-tag.outputs.tag }}
+      workspace_version: ${{ steps.get-workspace-version.outputs.metadata }}
+      new_version: ${{ steps.get-next-version.outputs.version }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Get current workspace version
+      id: get-workspace-version
+      uses: nicolaiunrein/cargo-get@v1.1.1
+      with:
+        subcommand: workspace.package.version
+    - name: Get latest release tag
+      id: get-latest-tag
+      uses: WyriHaximus/github-action-get-previous-tag@v1
+    - name: Remove prefix from current release tag
+      id: get-version-from-latest-tag
+      run: |
+        VERSION=${{ steps.get-latest-tag.outputs.tag }}
+        echo "release_version=${VERSION#v}" >> "$GITHUB_OUTPUT"
+    - name: Determine new version
+      id: get-next-version
+      uses: paulhatch/semantic-version@v5.2.1
+      with:
+        tag_prefix: "v"
+        version_format: "${major}.${minor}.${patch}"
+        major_pattern: "(MAJOR)"
+        minor_pattern: "(MINOR)"
 
-  # Update the rust workspace version (if it hasn't yet been updated), or if it
-  # has been updated, created a tag to reflect the new workspace version.
   version-update:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    needs: get-versions-and-new-tag
+    if: ${{ needs.get-versions-and-new-tag.outputs.workspace_version == needs.get-versions-and-new-tag.outputs.release_version }}
     steps:
       - uses: actions/checkout@v3
       - name: Update version
         uses: "./.github/actions/version-update"
         with:
-          version: "0.2.0"
+          version: ${{ needs.get-versions-and-new-tag.outputs.new_version }}
