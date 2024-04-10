@@ -5,3 +5,11 @@ version = 3
 [[package]]
 name = "cargo-edit-issue-891"
 version = "0.1.0"
+dependencies = [
+ "private-crate",
+]
+
+[[package]]
+name = "private-crate"
+version = "0.1.0"
+source = "git+https://github.com/brogdonm/private-crate?branch=main#f33c4b65b97ce12202b52d3d059cb276eb8dc688"

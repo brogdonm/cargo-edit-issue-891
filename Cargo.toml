@@ -7,3 +7,7 @@ version = "0.1.0"
 authors = [ "Michael Brogdon <Michael.Brogdon@monotype.com>" ]
 description = "A workspace for reproducing cargo-edit issue 891"
 edition = "2021"
+
+[workspace.dependencies.private-crate]
+git = "https://github.com/brogdonm/private-crate"
+branch = "main"
