@@ -11,7 +11,7 @@ runs:
     - name: Install cargo-edit
       uses: baptiste0928/cargo-install@v3
       with:
-        tool: cargo-edit
+        crate: cargo-edit
     - name: Update workspace version
       id: update-workspace-version
       shell: bash
